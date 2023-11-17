@@ -236,13 +236,14 @@ GameObject:
   m_Component:
   - component: {fileID: 673733301}
   - component: {fileID: 673733300}
+  - component: {fileID: 673733302}
   m_Layer: 0
-  m_Name: You Eye
+  m_Name: Patrol Script Inspector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &673733300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,6 +275,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &673733302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673733299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ed297aff1f13d43918bde8e62925ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inspectorController: {fileID: 1560054017}
 --- !u!1 &1194877905
 GameObject:
   m_ObjectHideFlags: 0
@@ -432,6 +446,35 @@ MonoBehaviour:
   scripts: []
   defaultSprite: {fileID: 7482667652216324306, guid: 40461cdf500114f7f8dee32c8ae36792, type: 3}
   sprite1: {fileID: 21300000, guid: 666319e87c6b841fa87bfeb1217eb550, type: 3}
+--- !u!1 &1560054016 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7304736187897288337, guid: 57663dc6a974f48a0a2824d4a2643c1e, type: 3}
+  m_PrefabInstance: {fileID: 7304736187173714971}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1560054017 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7304736187897288342, guid: 57663dc6a974f48a0a2824d4a2643c1e, type: 3}
+  m_PrefabInstance: {fileID: 7304736187173714971}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560054016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320c7d0aaf9fd014695915e490eb875a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1560054020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560054016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d69fffb4bbc26fc438f1804c8876f3fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Patrol: {fileID: 673733299}
 --- !u!1 &1904642972
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,5 +873,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7304736187897288342, guid: 57663dc6a974f48a0a2824d4a2643c1e, type: 3}
+      propertyPath: scriptController
+      value: 
+      objectReference: {fileID: 1560054020}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57663dc6a974f48a0a2824d4a2643c1e, type: 3}

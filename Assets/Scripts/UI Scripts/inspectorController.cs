@@ -85,6 +85,7 @@ public class inspectorController : MonoBehaviour
         script1Button.clickable.clicked += () =>
         {
             Debug.Log("Script1 clickecd");
+            this.GetComponent<ScriptController>().ShowScript(script1Button.text);
         };
         script2Button.clickable.clicked += () =>
         {
@@ -148,13 +149,17 @@ public class inspectorController : MonoBehaviour
             script3Button.text = obj.scripts[2].visualScript.name.ToString() + ".cs";
         }
 
-        
-        
+    }
+    public void HideInspector()
+    {
+        root.visible = false;
+    }
+    public void ShowInspector()
+    {
+        root.visible = true;
+    }
 
 
-    }    
 
-
-        
 
 }
