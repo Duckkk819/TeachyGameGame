@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/UI Toolkit/ScriptsUI/TemplateScriptUI.uxml.meta
-guid: ad660f9daf48187449a2a9ce7a95e433
-========
-guid: e455b2ecf110010449ac52369c153f43
->>>>>>>> erm:Assets/UI Toolkit/ScriptsUI/EnemyUI.uxml.meta
+guid: b8e7b5457e6e49a499c7ac0650f99674
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}

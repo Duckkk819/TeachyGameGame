@@ -3,47 +3,35 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using SimulatedComponent = SimulatedObject.SimulatedComponent;
 
 public class inspectorController : MonoBehaviour
 {
     private static inspectorController _instance;
     public static inspectorController Instance { get { return _instance; } }
 
-    VisualElement root;
-    Label objectName, objectTag;
-    Toggle TRANSTog, SRTog, IMGTog, RB2DTog, BC2DTog;
-    Image test;
-    Button script1Button, script2Button, script3Button;
+    public UIDocument mainUIDocument;
+    public PanelSettings panelSettings;
 
-    Sprite globalSpriteDefault, globarSprite1;
-    SimulatedObject currentObject;
+    public VisualTreeAsset componentTemplate;
+    public VisualTreeAsset scriptTemplate;
 
-    
-    private void OnEnable() // get ui references B-)
-    {
-        root = GetComponent<UIDocument>().rootVisualElement;
-        objectName = root.Q<Label>("Object_name");
-        objectTag = root.Q<Label>("Tag");
+    public Color trueColor;
+    public Color falseColor;
+    public AnimationCurve flashCurve;
 
+    private VisualElement root;
+    private Button xButton;
+    private Label objectName, objectTag;
 
-        SRTog = root.Q<Toggle>("SR_toggle");
+    private Sprite globalSpriteDefault, globalSprite1;
+    private SimulatedObject currentObject;
+    private List<VisualElement> componentDisplays = new();
+    private List<VisualElement> scriptDisplays = new();
+    private Dictionary<Toggle, SimulatedComponent> componentToggleBindings;
+    private Dictionary<Toggle, SimulatedScript> scriptToggleBindings;
+    private UIDocument currentDisplay;
 
-        IMGTog = root.Q<Toggle>("IMG_toggle");
-
-        BC2DTog = root.Q<Toggle>("RB2D_toggle");
-
-        BC2DTog = root.Q<Toggle>("BC2D_toggle");
-
-
-
-        test = root.Q<Image>("SR_image");
-
-        script1Button = root.Q<Button>("Script1_button");
-        script2Button = root.Q<Button>("Script2_button");
-        script3Button = root.Q<Button>("Script3_button");
-
-
-    }
 
     private void Awake()
     {
@@ -58,6 +46,18 @@ public class inspectorController : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+    
+    private void OnEnable() // get ui references B-)
+    {
+        root = mainUIDocument.rootVisualElement;
+        objectName = root.Q<Label>("Object_name");
+        objectTag = root.Q<Label>("Tag");
+        xButton = root.Q<Button>("x_button");
+        xButton.clickable.clicked += () =>
+        {
+            root.visible = false;
+        };
+    }
 
     void Start()
     {
@@ -68,22 +68,26 @@ public class inspectorController : MonoBehaviour
     {
         if (currentObject == null)
         {
-            //catch exeption;
+            return;
         }
 
-        currentObject.setComponentEnabledStatus(currentObject.components[1], SRTog.value);
-        currentObject.setComponentEnabledStatus(currentObject.components[3], BC2DTog.value);
-
-        if (IMGTog.value == true) //set image based on toggle
+        foreach (KeyValuePair<Toggle, SimulatedComponent> kvp in componentToggleBindings)
         {
-            currentObject.GetComponent<SpriteRenderer>().sprite = globarSprite1;
-        } else if (IMGTog.value == false)
-        {
-            currentObject.GetComponent<SpriteRenderer>().sprite = globalSpriteDefault;
+            Toggle toggle = kvp.Key;
+            SimulatedComponent component = kvp.Value;
+            if (component.realComponent is SpriteRenderer)
+            {
+                currentObject.GetComponent<SpriteRenderer>().sprite = toggle.value ? globalSprite1 : globalSpriteDefault;
+            }
+            else
+            {
+                currentObject.setComponentEnabledStatus(component, toggle.value);
+            }
         }
 
-        script1Button.clickable.clicked += () =>
+        foreach(KeyValuePair<Toggle,SimulatedScript> kvp in scriptToggleBindings)
         {
+<<<<<<< HEAD:Assets/Scripts/UI Scripts/inspectorController.cs
             Debug.Log("Script1 clickecd");
             this.GetComponent<ScriptController>().ShowScript(script1Button.text);
         };
@@ -95,59 +99,135 @@ public class inspectorController : MonoBehaviour
         {
             Debug.Log("Script3 clickecd");
         };
+=======
+            Toggle toggle = kvp.Key;
+            SimulatedScript script = kvp.Value;
+            currentObject.setScriptEnabledStatus(script, toggle.value);
+        }
+>>>>>>> erm:Assets/Scripts/Simulated Editor/inspectorController.cs
 
     }
 
     public void DisplayObject(SimulatedObject obj, Sprite noSprite, Sprite sprite)
     {
-        root.visible = true;
-        currentObject = obj;
+        Debug.Log("1");
+        // Clear old elements
+        while (componentDisplays.Count > 0)
+        {
+            VisualElement element = componentDisplays[0];
+            root.Q<VisualElement>("components").Remove(element);
+            componentDisplays.Remove(element);
+        }
+        while (scriptDisplays.Count > 0)
+        {
+            Debug.Log("2");
+            VisualElement element = scriptDisplays[0];
+            Debug.Log(element);
+            root.Q<VisualElement>("scripts").Remove(element);
+            scriptDisplays.Remove(element);
+        }
+        Debug.Log("3");
+
+        //Clear old bindings
+        componentToggleBindings = new();
+        scriptToggleBindings = new();
+
+        //Remove the current display
+        Display(null);
+
+        componentDisplays = new List<VisualElement>();
+        scriptDisplays = new List<VisualElement>();
+        this.currentObject = obj;
+        List<SimulatedComponent> components = currentObject.components;
+        List<SimulatedScript> scripts = currentObject.scripts;
+
+        // Display the components
+        foreach (SimulatedComponent component in components)
+        {
+            VisualElement componentDisplay = getComponentDisplay(component);
+            componentDisplays.Add(componentDisplay);
+            root.Q<VisualElement>("components").Add(componentDisplay);
+        }
+
+        // Display the scripts as buttons
+        foreach (SimulatedScript script in scripts){
+            VisualElement scriptDisplay = GetScriptDisplay(script);
+            scriptDisplays.Add(scriptDisplay);
+            root.Q<VisualElement>("scripts").Add(scriptDisplay);
+        }
+
         globalSpriteDefault = noSprite;
-        globarSprite1 = sprite;
+        globalSprite1 = sprite;
 
         //SET OBJ NAME & TAG
         objectName.text = obj.gameObject.name.ToString();
         objectTag.text = obj.gameObject.tag.ToString();
 
-        //SET TOGGLES
-        if (obj.getComponentEnabledStatus(obj.components[1]) == true) //check if Sprite Renderer = true
-        {
-            SRTog.value = true;
-        } else
-        {
-            SRTog.value = false;
-        }
-       
-        if( obj.GetComponent<SpriteRenderer>().sprite.name == noSprite.name) //check to see if sprite is default or not
-        {
-            IMGTog.value = false;
-        }else
-        {
-            IMGTog.value = true;
-        }
+        //Show the inspector
+        root.visible = true;
+    }    
 
-        if (obj.getComponentEnabledStatus(obj.components[2]) == true) //check if BoxCollider = true
+    private VisualElement getComponentDisplay(SimulatedComponent component)
+    {
+        VisualComponent visualComponent = component.visualComponent;
+
+        VisualElement componentDisplay = componentTemplate.CloneTree();
+        VisualElement icon = componentDisplay.Q<VisualElement>("image");
+        Label label = componentDisplay.Q<Label>("label");
+        Label description = componentDisplay.Q<Label>("desc");
+        Toggle toggle = componentDisplay.Q<Toggle>("toggle");
+
+        Debug.Log(icon);
+        Debug.Log(visualComponent.image);
+
+        icon.style.backgroundImage = visualComponent.image.texture;
+        label.text = visualComponent.title;
+        description.text = visualComponent.description;
+
+        if (currentObject.isComponentToggleable(component))
         {
-            BC2DTog.value = true;
+            toggle.value = currentObject.getComponentEnabledStatus(component);
+            componentToggleBindings.Add(toggle, component);
         }
         else
         {
-            BC2DTog.value = false;
+            toggle.style.opacity = 0;
         }
 
-        //SHOW SCRIPT BUTTONS
-        if (obj.scripts[0] != null)
+        return componentDisplay;
+    }
+    private VisualElement GetScriptDisplay(SimulatedScript script)
+    {
+        VisualElement scriptDisplay = scriptTemplate.CloneTree();
+
+        Button button = scriptDisplay.Q<Button>("button");
+        Toggle toggle = scriptDisplay.Q<Toggle>("toggle");
+
+        button.text = script.visualScript.title + ".cs";
+        button.clickable.clicked += () =>
         {
-            script1Button.text = obj.scripts[0].visualScript.name.ToString() + ".cs";
-        }
-        if (obj.scripts[1] != null)
+            Display(script.GetUIDoc(panelSettings));
+        };
+
+        toggle.value = script.enabled;
+        scriptToggleBindings.Add(toggle, script);
+
+        return scriptDisplay;
+    }
+
+    private void Display(UIDocument displayedUI)
+    {
+        if (currentDisplay)
         {
-            script2Button.text = obj.scripts[1].visualScript.name.ToString() + ".cs";
+            currentDisplay.rootVisualElement.visible = false;
         }
-        if (obj.scripts[2] != null)
+
+        currentDisplay = displayedUI;
+        if (displayedUI)
         {
-            script3Button.text = obj.scripts[2].visualScript.name.ToString() + ".cs";
+            displayedUI.rootVisualElement.visible = true;
         }
+<<<<<<< HEAD:Assets/Scripts/UI Scripts/inspectorController.cs
 
     }
     public void HideInspector()
@@ -162,4 +242,7 @@ public class inspectorController : MonoBehaviour
 
 
 
+=======
+    }
+>>>>>>> erm:Assets/Scripts/Simulated Editor/inspectorController.cs
 }
