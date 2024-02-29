@@ -19,6 +19,10 @@ public class PlayerController : CharacterController
     [SerializeField] private int walljumpCount;
     [SerializeField] private float wallCheckDistance;
 
+    [Header("Other")]
+    [SerializeField] private PlayerInput playerInput;
+    public Cord cord;
+
     int health;
     bool damagable = true;
 

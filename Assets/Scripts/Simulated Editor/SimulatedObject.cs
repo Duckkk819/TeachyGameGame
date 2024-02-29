@@ -107,7 +107,12 @@ public class SimulatedObject : MonoBehaviour
         Vector2 cursorPos = controller.followCamera.controlledCamera.ScreenToWorldPoint(Input.mousePosition);
         if (!CheckBlockingObject(playerPos, cursorPos).HasValue)
         {
+            Cord.Instance.Render(PlayerSpawn.Player.gameObject.transform.position, this.transform.position, Color.blue);
             controller.DisplayObject(this, defaultSprite, sprite1);
+        }
+        else
+        {
+            Cord.Instance.Render(PlayerSpawn.Player.transform.position, CheckBlockingObject(playerPos, cursorPos).Value, Color.red);
         }
     }
 
