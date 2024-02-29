@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -8,14 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private string TitleScreen;
-    [SerializeField] private string Level1;
-    [SerializeField] private float playerDamageCooldown;
-    [SerializeField] private UnityEngine.Rendering.Volume damageVolume;
-    public int playerHealth;
+    [SerializeField] InspectorController inspectorController;
+
+    // TODO: PC should control these values
 
     private static GameManager _instance;
     public static GameManager Instance { get { return _instance; } }
+
+    public static PlayerController Player { get { return PlayerSpawn.Player;  } }
 
     public enum GameState
     {
@@ -43,11 +42,10 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-
         if (_instance == null)
         {
             _instance = this;
-
+            currentScene = SceneManager.GetActiveScene().name;
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -65,7 +63,6 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         CurrentGameState = GameState.Playing;
-        LoadScene(Level1);
         
         OnGameStart.Invoke();
         TogglePause();
@@ -100,7 +97,6 @@ public class GameManager : MonoBehaviour
 
     public void QuitGame()
     {
-        SceneManager.LoadScene(TitleScreen);
         OnGameQuit.Invoke();
     }
 
@@ -119,31 +115,7 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
         currentScene = sceneName;
-    }
-
-    public void HealPlayer()
-    {
-        Debug.Log("Healing player: " + playerHealth);
-        playerHealth++;
-        OnPlayerHeal.Invoke();
-    }
-
-    public void HurtPlayer()
-    {
-        if (isPlayerDamageable)
-        {
-            DamageCoroutineObject = DoDamageCooldown();
-            StartCoroutine(DamageCoroutineObject);
-
-            playerHealth--;
-            OnPlayerHurt.Invoke();
-            Debug.Log("Player health:" + playerHealth);
-
-            if (playerHealth <= 0)
-            {
-                LoseGame();
-            }
-        }
+        inspectorController.StopDisplaying();
     }
 
     public void TogglePause()
@@ -161,22 +133,5 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ResumeGame();
-    }
-
-    protected virtual IEnumerator DoDamageCooldown()
-    {
-        isPlayerDamageable = false;
-
-        float i = 0;
-        while (i < playerDamageCooldown)
-        {
-            i += Time.deltaTime;
-            //This is a nice juice thing, if we want a volume to appear on damage (like red at the sides of the screen)
-
-            damageVolume.weight = (playerDamageCooldown - i) / playerDamageCooldown;
-            yield return null;
-        }
-
-        isPlayerDamageable = true;
     }
 }

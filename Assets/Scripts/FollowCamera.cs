@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,50 +6,62 @@ using UnityEngine;
 public class FollowCamera : MonoBehaviour
 {
 
-    [SerializeField] private Camera followCamera;
+    [SerializeField] public Camera controlledCamera;
 
     [Tooltip("Offset from the player we'll follow at (based on the camera's position and the player's position)")]
     [SerializeField] private Vector3 offset;
-
-    [Tooltip("Character we are following")]
-    [SerializeField] private GameObject following;
-
-    [SerializeField] private float leftBound;
-    [SerializeField] private float rightBound;
-    [SerializeField] private float upperBound;
-    [SerializeField] private float lowerBound;
-
-    private float adjustedLeftBound;
-    private float adjustedRightBound;
+    [SerializeField] private BoxCollider2D cameraBoundingBox;
 
 
-    private void Awake()
-    {
-        if (following == null)
-        {
-            Debug.LogError("You didn't assign something to follow!");
-        }
-    }
+    private float leftBound;
+    private float rightBound;
+    private float lowerBound;
+    private float upperBound;
+    Vector2 cameraBounds;
 
+    private Vector2 target;
+
+    private bool bounded = true;
+
+    public float shift;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (following == null)
-        {
-            Debug.LogError("You didn't assign something to follow!");
-        }
-        transform.position = new Vector3(following.transform.position.x + offset.x,
-        following.transform.position.y + offset.y, transform.position.z);
+        leftBound = cameraBoundingBox.bounds.min.x;
+        rightBound = cameraBoundingBox.bounds.max.x;
+        lowerBound = cameraBoundingBox.bounds.min.y;
+        upperBound = cameraBoundingBox.bounds.max.y;
+
+        cameraBounds = new Vector2(controlledCamera.aspect * controlledCamera.orthographicSize, controlledCamera.orthographicSize);
+
+        transform.position = new Vector3(PlayerSpawn.Player.transform.position.x + offset.x,
+        PlayerSpawn.Player.transform.position.y + offset.y, transform.position.z);
     }
 
     // Update is called once per frame
     void Update()
     {
-        float boundedX = Mathf.Clamp(following.transform.position.x + offset.x, leftBound, rightBound);
-        float boundedY = Mathf.Clamp(following.transform.position.y + offset.y, lowerBound, upperBound);
-        transform.position = new Vector3(boundedX, boundedY, transform.position.z);
+        //Once the player goes out-of-bounds, they cannot reactivate the bounded camera
+        bounded = bounded && cameraBoundingBox.bounds.Contains((Vector2) PlayerSpawn.Player.transform.position);
 
+        if (bounded)
+        {
+            target = GetBoundedPosition();
+        }
+        else
+        { 
+            Vector2 playerPos = PlayerSpawn.Player.transform.position;
+            target = new(playerPos.x + offset.x, playerPos.y + offset.y);
+        }
+
+        transform.position = new(target.x, target.y, offset.z);
     }
 
+    private Vector2 GetBoundedPosition()
+    {
+        float boundedX = Mathf.Clamp(PlayerSpawn.Player.transform.position.x + offset.x, leftBound + cameraBounds.x, rightBound - cameraBounds.x);
+        float boundedY = Mathf.Clamp(PlayerSpawn.Player.transform.position.y + offset.y, lowerBound + cameraBounds.y, upperBound - cameraBounds.y);
+        return new Vector3(boundedX, boundedY, transform.position.z);
+    }
 }

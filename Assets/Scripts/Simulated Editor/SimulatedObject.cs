@@ -6,7 +6,10 @@ public class SimulatedObject : MonoBehaviour
 {
     public List<SimulatedComponent> components;
     public List<SimulatedScript> scripts;
-    private inspectorController controller;
+    public Collider2D clickTrigger;
+    private LayerMask layer;
+    private InspectorController controller;
+    private GameManager gameManager;
 
     public Sprite defaultSprite;
     public Sprite sprite1;
@@ -20,10 +23,16 @@ public class SimulatedObject : MonoBehaviour
 
     public void Start()
     {
-        controller = inspectorController.Instance;
+        controller = InspectorController.Instance;
+        gameManager = GameManager.Instance;
+        layer = gameObject.layer;
+        foreach (SimulatedScript script in scripts)
+        {
+            SetScriptEnabledStatus(script, script.isActiveAndEnabled);
+        }
     }
 
-    public bool isComponentToggleable(SimulatedComponent component)
+    public bool IsComponentToggleable(SimulatedComponent component)
     {
         switch (component.realComponent)
         {
@@ -38,7 +47,7 @@ public class SimulatedObject : MonoBehaviour
         }
     }
 
-    public bool getComponentEnabledStatus (SimulatedComponent component)
+    public bool GetComponentEnabledStatus (SimulatedComponent component)
     {
         switch (component.realComponent)
         {
@@ -53,12 +62,13 @@ public class SimulatedObject : MonoBehaviour
         }
     }
 
-    public void setComponentEnabledStatus(SimulatedComponent component, bool enabled)
+    public void SetComponentEnabledStatus(SimulatedComponent component, bool enabled)
     {
         switch (component.realComponent)
         {
             case Collider2D collider:
                 collider.enabled = enabled;
+                gameObject.layer = enabled ? layer : 0;
                 break;
             case SpriteRenderer renderer:
                 renderer.enabled = enabled;
@@ -72,26 +82,47 @@ public class SimulatedObject : MonoBehaviour
         }     
     }
 
-    public void toggleComponent(SimulatedComponent component)
+    public void ToggleComponent(SimulatedComponent component)
     {
-        setComponentEnabledStatus(component, !getComponentEnabledStatus(component));
+        SetComponentEnabledStatus(component, !GetComponentEnabledStatus(component));
     }
 
 
-    public void setScriptEnabledStatus(SimulatedScript script, bool enabled)
+    public void SetScriptEnabledStatus(SimulatedScript script, bool enabled)
     {
         script.enabled = enabled;
         script.doCoroutines = enabled;
+        script.doCollisionEvents = enabled;
     }
 
-    public void toggleScript(SimulatedScript script)
+    public void ToggleScript(SimulatedScript script)
     {
-        setScriptEnabledStatus(script, !script.enabled);
+        SetScriptEnabledStatus(script, !script.enabled);
     }
 
 
     public void OnMouseDown()
     {
-        controller.DisplayObject(this, defaultSprite, sprite1);
+        Vector2 playerPos = PlayerSpawn.Player.transform.position;
+        Vector2 cursorPos = controller.followCamera.controlledCamera.ScreenToWorldPoint(Input.mousePosition);
+        if (!CheckBlockingObject(playerPos, cursorPos).HasValue)
+        {
+            controller.DisplayObject(this, defaultSprite, sprite1);
+        }
+    }
+
+    public Vector2? CheckBlockingObject(Vector2 origin, Vector2 destination)
+    {
+        Vector2 raycastVector = destination - origin;
+        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, raycastVector.normalized, raycastVector.magnitude, PlayerSpawn.Player.groundLayer);
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.CompareTag(controller.lineOfSightBlockingTag) && !clickTrigger.bounds.Contains(hit.point) && hit.collider != clickTrigger)
+            {
+                Debug.Log(hit.point);
+                return hit.point;
+            }
+        }
+        return null;
     }
 }
