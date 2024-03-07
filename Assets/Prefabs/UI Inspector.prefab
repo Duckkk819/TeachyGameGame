@@ -63,51 +63,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 6895022771935317592}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 320c7d0aaf9fd014695915e490eb875a, type: 3}
+  m_Script: {fileID: 11500000, guid: e2d309a33175cee48810a41d5a4b8337, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mainUIDocument: {fileID: 7113185759849202434}
   panelSettings: {fileID: 11400000, guid: e54039dcaab600d4f9f92171bb7850fa, type: 2}
-  lineOfSightBlockingTag: CordBlocking
+  lineOfSightBlockingTag: 
   componentTemplate: {fileID: 9197481963319205126, guid: ae5359627a37f4a1cb9c93fa7f7ab30c, type: 3}
   scriptTemplate: {fileID: 9197481963319205126, guid: 38af2be51eb43495f86363b3de5fbffd, type: 3}
   trueColor: {r: 0, g: 0, b: 0, a: 0}
   falseColor: {r: 0, g: 0, b: 0, a: 0}
   flashCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.0036453996
-      value: 0.17048955
-      inSlope: 0.00008644831
-      outSlope: 0.00008644831
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.119218856
-    - serializedVersion: 3
-      time: 0.6994365
-      value: 0.052874215
-      inSlope: -0.31368825
-      outSlope: -0.31368825
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.7303492
-      value: -0.0033124927
-      inSlope: -0.23684552
-      outSlope: -0.23684552
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.03891442
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   followCamera: {fileID: 0}
-  cameraShiftAmount: 7
-  shiftDistance: 800
-  highlightMaterial: {fileID: 2100000, guid: 349c4d898d535a348bd22219b073d031, type: 2}
-  defaultMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  cameraShiftAmount: 0
+  shiftDistance: 0
+  highlightMaterial: {fileID: 0}
+  defaultMaterial: {fileID: 0}
