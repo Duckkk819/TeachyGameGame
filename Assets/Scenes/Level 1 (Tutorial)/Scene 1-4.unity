@@ -86422,5 +86422,52 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0.7196
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7323458776770634782, guid: b925fc6feac1b480bbf7d0b3cc8a01eb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b925fc6feac1b480bbf7d0b3cc8a01eb, type: 3}
+--- !u!1 &8830859591180891901 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8915184973483135877, guid: b925fc6feac1b480bbf7d0b3cc8a01eb, type: 3}
+  m_PrefabInstance: {fileID: 8830859591180891900}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8830859591180891902 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5097528392595414751, guid: b925fc6feac1b480bbf7d0b3cc8a01eb, type: 3}
+  m_PrefabInstance: {fileID: 8830859591180891900}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8830859591180891901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8830859591180891903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8830859591180891901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d309a33175cee48810a41d5a4b8337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainUIDocument: {fileID: 8830859591180891902}
+  panelSettings: {fileID: 11400000, guid: e54039dcaab600d4f9f92171bb7850fa, type: 2}
+  lineOfSightBlockingTag: 
+  componentTemplate: {fileID: 9197481963319205126, guid: ae5359627a37f4a1cb9c93fa7f7ab30c, type: 3}
+  scriptTemplate: {fileID: 9197481963319205126, guid: 38af2be51eb43495f86363b3de5fbffd, type: 3}
+  trueColor: {r: 0, g: 0, b: 0, a: 0}
+  falseColor: {r: 0, g: 0, b: 0, a: 0}
+  flashCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  followCamera: {fileID: 0}
+  cameraShiftAmount: 0
+  shiftDistance: 0
+  highlightMaterial: {fileID: 2100000, guid: fad52df0dc5322947850b59274b04c41, type: 2}
+  defaultMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
